@@ -1,6 +1,6 @@
 class Logable{
   public:
-    virtual String toString();
+    virtual String toLogText();
 };
 
 class Logger{
@@ -29,6 +29,6 @@ void Logger::logString(String line){
 }
 
 void Logger::logLogable(Logable line){
-  this -> serialPort -> print(line.toString());
+  this -> serialPort -> print(line.toLogText());
 }
 
