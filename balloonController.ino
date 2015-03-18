@@ -12,7 +12,7 @@
   #define TEMP_PIN 9
   #define ALTIMETER_PIN 5 //DO NOT CHANGE (Analog pin!)
   #define SELF_DESTRUCT_PIN 10
-  #define MINIMUM_DELAY 10000
+  #define MINIMUM_DELAY 60000
   
 //Setup serial ports
   SoftwareSerial GPS_SERIAL = SoftwareSerial(2, 3);

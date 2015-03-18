@@ -3,39 +3,103 @@
   #define PLANNING_DETONATION_STATE 1
   #define DETONATION_STATE 2
   #define FAILED_TO_DETONATE_STATE 3
-  #define DETONATION_CANCELLED_STATE 4
-  #define FALLING_STATE 5
-  #define GROUND_STATE 6
+  #define FALLING_STATE 4
+  #define GROUND_STATE 5
   
 int currentState = RISING_STATE;
-int lastSwitch = 0;
+int lastSwitch = 60;
+
+void singStarSpangledBanner(){
+}
+
+void warnGroundDetonation(){
+}
+
+boolean isFalling(){
+  return false;
+}
+
+boolean shouldDetonate(){
+  return false;
+}
+
+boolean groundCancelled(){
+  return false;
+}
 
 int runRisingState(){
-  return 0;
+  if(CLOCK.loops % 3 == 0 && CLOCK.loops - lastSwitch > 10){
+    if(isFalling() || shouldDetonate()){
+      logSensors();
+      warnGroundDetonation();
+      return PLANNING_DETONATION_STATE;
+    }
+  }
+  logSensors();
+  if(CLOCK.loops % 2 == 0){
+    saySensors();
+  }else{
+    delay(MINIMUM_DELAY);
+  }
+  return RISING_STATE;
 }
 
 int runPlanningDetonationState(){
-  return 0;
+  int startTime=CLOCK.nowSeconds();
+  while(CLOCK.nowSeconds()-startTime < 600){
+    if(groundCancelled()){
+      return RISING_STATE;
+    }
+    delay(10);
+  }
+  return DETONATION_STATE;
 }
 
 int runDetonationState(){
-  return 0;
+  int lastHeight = ALTIMETER.getHeight();
+  DETONATOR.detonate();
+  if(ALTIMETER.getHeight() > lastHeight){
+    return FAILED_TO_DETONATE_STATE;
+  }
+  return FALLING_STATE;
 }
 
 int runFailedDetonationState(){
-  return 0;
-}
-
-int runDetonationCancelledState(){
-  return 0;
+  if(isFalling()){
+    return FALLING_STATE;
+  }
+  logSensors();
+  if(CLOCK.loops % 2 == 0){
+    saySensors();
+  }else{
+    delay(MINIMUM_DELAY);
+  }
+  return FAILED_TO_DETONATE_STATE;
 }
 
 int runFallingState(){
-  return 0;
+  int firstHeight=ALTIMETER.getHeight();
+  delay(10000);
+  int secondHeight=ALTIMETER.getHeight();
+  if(firstHeight-secondHeight < 5  && firstHeight - secondHeight > -5){
+    return GROUND_STATE;
+  }
+  logSensors();
+  if(CLOCK.loops % 2){
+    saySensors();
+  }else{
+    delay(MINIMUM_DELAY);
+  }
+  return FALLING_STATE;
 }
 
 int runGroundState(){
-  return 0;
+  if(CLOCK.loops % 3 == 0){
+    singStarSpangledBanner();
+  }
+  logSensors();
+  delay(MINIMUM_DELAY);
+  return GROUND_STATE;
 }
 
 void runState(){
@@ -52,9 +116,6 @@ void runState(){
       break;
     case(FAILED_TO_DETONATE_STATE):
       currentState=runFailedDetonationState();
-      break;
-    case(DETONATION_CANCELLED_STATE):
-      currentState=runDetonationCancelledState();
       break;
     case(FALLING_STATE):
       currentState=runFallingState();

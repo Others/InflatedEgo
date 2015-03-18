@@ -13,13 +13,13 @@ Altimeter::Altimeter(int pin){}
 void Altimeter::logText(){
   String tbr="Altitude is ";
   tbr+=getHeight();
-  LOGGER.logLine(tbr + "feet");
+  LOGGER.logLine(tbr + " feet");
 }
 
 void Altimeter::transmitText(){
   String tbr="Altitude is ";
   tbr+=getHeight();
-  SPEECH_SYNTH.transmit(tbr + "feet");
+  SPEECH_SYNTH.transmit(tbr + " feet");
 }
 
 int Altimeter::getHeight(){
