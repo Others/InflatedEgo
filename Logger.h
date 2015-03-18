@@ -1,22 +1,13 @@
-class Logable{
-  public:
-    virtual String toLogText();
-};
-
 class Logger{
   public:
-    SerialWrapper* serialPort;
-    Logger(SerialWrapper* serialPort);
+    SoftwareSerial* serialPort;
+    Logger(SoftwareSerial* serialPort);
     void logLine(String line);
     void logString(String string);
-    void logLogable(Logable logable);
 };
 
-Logger::Logger(SerialWrapper* serialPort){
+Logger::Logger(SoftwareSerial* serialPort){
   this -> serialPort = serialPort;
-  if(serialPort -> baud != 9600){
-    //throw "Incorrect baud on serial port!";
-  }
 }
 
 void Logger::logLine(String line){
@@ -26,9 +17,5 @@ void Logger::logLine(String line){
 
 void Logger::logString(String line){
   this -> serialPort -> print(line);
-}
-
-void Logger::logLogable(Logable line){
-  this -> serialPort -> print(line.toLogText());
 }
 

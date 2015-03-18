@@ -1,65 +1,52 @@
-//Depandancies
-  //Include serial code
+//Dependancies
   #include "Arduino.h"
   #include "Time.h"
   #include "SoftwareSerial.h"
+  #include "Wire.h"
+  #include "OneWire.h"
+  #include "IntersemaBaro.h"
   #include "SerialWrapper.h"
-  //Include the logger and text 2 speech code
+  
+//Setup binary ports
+  #define TALK_PIN 4
+  #define TEMP_PIN 9
+  #define ALTIMETER_PIN 5 //DO NOT CHANGE
+  #define SELF_DESTRUCT_PIN 10
+  #define LOOP_DELAY 10000
+  
+//Setup serial ports
+  SoftwareSerial GPS_SERIAL = SoftwareSerial(2, 3);
+  SoftwareSerial TEXT_SERIAL = SoftwareSerial(5, 6);
+  SoftwareSerial LOGGER_SERIAL = SoftwareSerial(7, 8);
+  
+//Setup global control systems
   #include "Logger.h"
   #include "Text2Speech.h"
-  //Include the sensor code
+  #include "Detenator.h"
+  Logger LOGGER = Logger(&LOGGER_SERIAL);
+  TextTransmitter SPEECH_SYNTH = TextTransmitter(&TEXT_SERIAL, TALK_PIN);
+  Detonator DETONATOR = Detonator(SELF_DESTRUCT_PIN);
+  
+//Include the sensor code
   #include "Altimeter.h"
   #include "Clock.h"
   #include "Gps.h"
   #include "Thermometer.h"
-  //Include the logic code
-  #include "Detenator.h"
-  #include "Comms.h"
-  
-//Setup predefined constants
-  //Setup binary ports
-  #define TALK_PIN 9
-  #define SELF_DESTRUCT_PIN 10
-  #define LOOP_DELAY 10000
-  //Setup serial ports
-  SerialWrapper* GPS_SERIAL = new Hardware_Serial(9600);
-  SerialWrapper* TEXT_SERIAL = new Software_Serial(new SoftwareSerial(5, 6), 9600); 
-  SerialWrapper* LOGGER_SERIAL = new Software_Serial(new SoftwareSerial(7, 8), 9600);
-  
-//Setup sensors and data interpreters
-  //Setup logger and transmitter 
-  TextTransmitter* SPEECH_SYNTH = new TextTransmitter(TEXT_SERIAL, TALK_PIN);
-  Logger* logger = new Logger(LOGGER_SERIAL);
   //Setup the various loggable sensors
-  Clock* clock = new Clock();
-  //Setup the sensors that need logged and sensors that need transmitted
-  const int NUM_LOG = 0;
-  Logable* TO_LOG [] = {};
+  Clock CLOCK = Clock();
+  Thermometer THERMOMETER = Thermometer(TEMP_PIN);
+  GPS GPS_SENSOR = GPS(&GPS_SERIAL);
+  Altimeter ALTIMETER = Altimeter(ALTIMETER_PIN);
   
-  const int NUM_TRANSMIT = 0;
-  Transmitable* TO_TRANSMIT [] = {};
-
-//Setup the logic systems
-  Detonator* detonator = new Detonator(SELF_DESTRUCT_PIN);
-  Comms* comms = new Comms(SPEECH_SYNTH);
   
-void setup() {}
+  
+void setup() {
+  GPS_SERIAL.begin(9600);
+  TEXT_SERIAL.begin(9600);
+  LOGGER_SERIAL.begin(9600);
+}
 
 void loop() {
-  if(detonator -> allowDetonation() && comms -> attemptConfirmDetonation()){
-    detonator -> detonate();
-  }
-  
-  if(comms -> shouldSendDispatch()){
-    for(int i=0; i < NUM_TRANSMIT; i++){
-      comms -> transmit(*TO_TRANSMIT[i]);
-    }
-  }
-   
-  for(int i=0; i < NUM_LOG; i++){
-    logger -> logLogable(*TO_LOG[i]);
-  }
-  
-  clock -> incrementLoop();
+  CLOCK.incrementLoop();
   delay(LOOP_DELAY);
 }

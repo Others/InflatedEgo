@@ -1,27 +1,27 @@
-//To implement: Getting the height + better string code
-class Altimeter: public Logable, public Transmitable{
+Intersema::BaroPressure_MS5607B baro(true);
+
+class Altimeter{
   public:
-    SerialWrapper* serialPort;
-    Altimeter(SerialWrapper* serialPort);
+    Altimeter(int pin);
     int getHeight();
-    String toLogText();
-    String toTransmitText();
+    void logText();
+    void transmitText();
 };
 
-Altimeter::Altimeter(SerialWrapper* serialPort){
-  this -> serialPort = serialPort;
-}
+Altimeter::Altimeter(int pin){}
 
-String Altimeter::toLogText(){
+void Altimeter::logText(){
   String tbr="Altitude is ";
   tbr+=getHeight();
-  return tbr + "feet";
+  LOGGER.logLine(tbr + "feet");
 }
 
-String Altimeter::toTransmitText(){
-  return toLogText();
+void Altimeter::transmitText(){
+  String tbr="Altitude is ";
+  tbr+=getHeight();
+  SPEECH_SYNTH.transmit(tbr + "feet");
 }
 
-int getHeight(){
-  return 0;
+int Altimeter::getHeight(){
+  return (int) ((baro.getHeightCentiMeters() - 7391.4) / 30.48);
 }

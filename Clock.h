@@ -1,18 +1,18 @@
 //To implement: better string code
-class Clock: public Logable, public Transmitable{
+class Clock{
   public:
     int loops=0;
     int nowSeconds();
     void incrementLoop();
-    String toLogText();
-    String toTransmitText();
+    void logText();
+    void transmitText();
 };
 
 int Clock::nowSeconds(){
   return now();
 }
 
-String Clock::toLogText(){
+void Clock::logText(){
   String timeString = "Time:";
   timeString +=  hour();
   timeString += ":";
@@ -23,15 +23,15 @@ String Clock::toLogText(){
   timeString += month();
   timeString += "/";
   timeString += year();
-  return timeString;
+  LOGGER.logLine(timeString);
 }
 
-String Clock::toTransmitText(){
+void Clock::transmitText(){
   String timeString = "It is ";
   timeString += hour();
   timeString += " ";
   timeString += minute();
-  return timeString;
+  SPEECH_SYNTH.transmit(timeString);
 }
 
 void Clock::incrementLoop(){
