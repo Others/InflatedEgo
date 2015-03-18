@@ -1,12 +1,18 @@
 //To implement: better string code
 class Clock{
   public:
+    int startTime=-1;
     int loops=0;
     int nowSeconds();
+    void init();
     void incrementLoop();
     void logText();
     void transmitText();
 };
+
+void Clock::init(){
+  startTime = now();
+}
 
 int Clock::nowSeconds(){
   return now();

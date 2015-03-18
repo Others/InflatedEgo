@@ -43,6 +43,7 @@ void setup() {
   GPS_SERIAL.begin(9600);
   TEXT_SERIAL.begin(9600);
   LOGGER_SERIAL.begin(9600);
+  CLOCK.init();
 }
 
 void logSensors() {
@@ -61,7 +62,7 @@ void saySensors() {
 
 void loop() {
   logSensors();
-  saySensors
+  saySensors();
   CLOCK.incrementLoop();
   delay(LOOP_DELAY);
 }
