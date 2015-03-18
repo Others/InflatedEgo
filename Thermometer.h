@@ -5,11 +5,12 @@ class Thermometer{
   public:
     OneWire* ds;
     Thermometer(int pin);
+    Thermometer();
     int getFarenhight();
     void logText();
     void transmitText();
 };
-
+Thermometer::Thermometer(){}
 Thermometer::Thermometer(int pin){
   ds=new OneWire(pin);
 }

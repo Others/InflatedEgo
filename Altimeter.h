@@ -2,12 +2,13 @@ Intersema::BaroPressure_MS5607B baro(true);
 
 class Altimeter{
   public:
+    Altimeter();
     Altimeter(int pin);
     int getHeight();
     void logText();
     void transmitText();
 };
-
+Altimeter::Altimeter(){}
 Altimeter::Altimeter(int pin){}
 
 void Altimeter::logText(){
@@ -19,6 +20,7 @@ void Altimeter::logText(){
 void Altimeter::transmitText(){
   String tbr="Altitude is ";
   tbr+=getHeight();
+  Serial.println(tbr);
   SPEECH_SYNTH.transmit(tbr + " feet");
 }
 

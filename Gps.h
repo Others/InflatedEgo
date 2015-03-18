@@ -19,10 +19,13 @@ class GPS{
     float timeCoordsGroundspeed[4] = {0,0,0,0};
     SoftwareSerial* gpsTest;
     GPS(SoftwareSerial* serial);
+    GPS();
     float* getTimeCoordinatesAndSpeed();
     void logText();
     void transmitText();
 };
+
+GPS::GPS(){}
 
 GPS::GPS(SoftwareSerial* gpsTest){
   this -> gpsTest = gpsTest;

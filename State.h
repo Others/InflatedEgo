@@ -9,6 +9,13 @@
 int currentState = RISING_STATE;
 int lastSwitch = 60;
 
+int loc = 0;
+int count = 0;
+int zeros = 0;
+int reset = 0;
+
+bool alt = false;
+
 void singStarSpangledBanner(){
 }
 
@@ -24,6 +31,38 @@ boolean shouldDetonate(){
 }
 
 boolean groundCancelled(){
+  int input = analogRead(A0);
+  if (input > 500 & input < 800) { //First tone
+    if (!alt) {
+      alt = true;
+      reset = 0;
+    } else {
+      count++;
+      reset++;
+      if (reset > 3) {
+        zeros = 0;
+      }
+    }
+  } else if (count > 0 && input < 500) { //Second tone
+    if (alt) {
+      alt = false;
+      zeros++;
+    }
+  }
+  if (zeros > 120 && count > 1000) { //Part of the sound
+    loc++;
+    count = 0;
+    zeros = 0;
+    if (loc == 3) { //The full sound!
+      loc = 0;
+      return true;
+    }
+  }
+  if ((zeros > 300 && count > 10) || count > 1300) { //Not the sound
+    zeros = 0;
+    count = 0;
+    loc = 0;
+  }
   return false;
 }
 
@@ -46,11 +85,14 @@ int runRisingState(){
 
 int runPlanningDetonationState(){
   int startTime=CLOCK.nowSeconds();
+  loc = 0;
+  count = 0;
+  zeros = 0;
+  reset = 0;
   while(CLOCK.nowSeconds()-startTime < 600){
     if(groundCancelled()){
       return RISING_STATE;
     }
-    delay(10);
   }
   return DETONATION_STATE;
 }

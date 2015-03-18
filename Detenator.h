@@ -4,13 +4,14 @@ class Detonator{
     int detonationPort;
     boolean hasDetonated = false;
     boolean detonationSequenceComplete = false;
+    Detonator();
     Detonator(int detonationPort);
     boolean allowDetonation();
     boolean atDetonationConditions();
     void detonate();
     void cancelDetonator();
 };
-
+Detonator::Detonator(){}
 Detonator::Detonator(int detonationPort){
   this -> detonationPort = detonationPort;
   pinMode(detonationPort, OUTPUT);
