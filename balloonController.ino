@@ -10,7 +10,7 @@
 //Setup binary ports
   #define TALK_PIN 4
   #define TEMP_PIN 9
-  #define ALTIMETER_PIN 5 //DO NOT CHANGE
+  #define ALTIMETER_PIN 5 //DO NOT CHANGE (Analog pin!)
   #define SELF_DESTRUCT_PIN 10
   #define LOOP_DELAY 10000
   
@@ -39,14 +39,29 @@
   Altimeter ALTIMETER = Altimeter(ALTIMETER_PIN);
   
   
-  
 void setup() {
   GPS_SERIAL.begin(9600);
   TEXT_SERIAL.begin(9600);
   LOGGER_SERIAL.begin(9600);
 }
 
+void logSensors() {
+  CLOCK.logText();
+  ALTIMETER.logText();
+  THERMOMETER.logText();
+  GPS_SENSOR.logText();
+}
+
+void saySensors() {
+  CLOCK.transmitText();
+  ALTIMETER.transmitText();
+  THERMOMETER.transmitText();
+  GPS_SENSOR.transmitText();
+}
+
 void loop() {
+  logSensors();
+  saySensors
   CLOCK.incrementLoop();
   delay(LOOP_DELAY);
 }

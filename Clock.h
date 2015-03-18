@@ -23,6 +23,9 @@ void Clock::logText(){
   timeString += month();
   timeString += "/";
   timeString += year();
+  timeString += ". This information gathered after ";
+  timeString += loops;
+  timeString += " loops!";
   LOGGER.logLine(timeString);
 }
 
