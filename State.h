@@ -8,6 +8,8 @@
   
 int currentState = RISING_STATE;
 int lastSwitch = 60;
+float heights[20];
+int row = 0;
 
 void singStarSpangledBanner(){
 }
@@ -16,7 +18,13 @@ void warnGroundDetonation(){
 }
 
 boolean isFalling(){
+  for (int i=0;i<19;i++) heights[i] = heights[i+1];
+  heights[19] = ALTIMETER.getHeight();
+  if (heights[19]<heights[0]) row+=1;
+  else row = 0;
+  if (row==5) return true;
   return false;
+  
 }
 
 boolean shouldDetonate(){
